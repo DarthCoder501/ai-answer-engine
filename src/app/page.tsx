@@ -33,17 +33,20 @@ export default function Home() {
       });
 
       // TODO: Handle the response from the chat API to display the AI response in the UI
+      if (!response.ok) {
+        throw new Error("Failed to fetch AI response");
+      }
+      const data = await response.json();
 
-
-
-
+      // Assuming the API returns the AI's response in `data.reply`
+      const aiMessage = { role: "ai" as const, content: data.groqResponse };
+      setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
       console.error("Error:", error);
     } finally {
       setIsLoading(false);
     }
   };
-
 
   // TODO: Modify the color schemes, fonts, and UI as needed for a good user experience
   // Refer to the Tailwind CSS docs here: https://tailwindcss.com/docs/customizing-colors, and here: https://tailwindcss.com/docs/hover-focus-and-other-states
