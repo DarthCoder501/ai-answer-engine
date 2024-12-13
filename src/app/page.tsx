@@ -3,14 +3,14 @@
 import { useState } from "react";
 
 type Message = {
-  role: "user" | "ai";
+  role: "user" | "assistant";
   content: string;
 };
 
 export default function Home() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([
-    { role: "ai", content: "Hello! How can I help you today?" },
+    { role: "assistant", content: "Hello! How can I help you today?" },
   ]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,19 +28,19 @@ export default function Home() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer dvdsovjsovjsmvlmdslm",
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message, messages }),
       });
 
       // TODO: Handle the response from the chat API to display the AI response in the UI
-      if (!response.ok) {
-        throw new Error("Failed to fetch AI response");
-      }
       const data = await response.json();
+      console.log("data:", data);
 
-      // Assuming the API returns the AI's response in `data.reply`
-      const aiMessage = { role: "ai" as const, content: data.groqResponse };
-      setMessages(prev => [...prev, aiMessage]);
+      setMessages(prev => [
+        ...prev,
+        { role: "assistant", content: data.message },
+      ]);
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -53,7 +53,7 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen bg-gray-900">
       {/* Header */}
-      <div className="w-full bg-gray-800 border-b border-gray-700 p-4">
+      <div className="w-full bg-violet-800 border-b border-rose-700 p-4">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-xl font-semibold text-white">Chat</h1>
         </div>
@@ -66,16 +66,16 @@ export default function Home() {
             <div
               key={index}
               className={`flex gap-4 mb-4 ${
-                msg.role === "ai"
+                msg.role === "assistant"
                   ? "justify-start"
                   : "justify-end flex-row-reverse"
               }`}
             >
               <div
                 className={`px-4 py-2 rounded-2xl max-w-[80%] ${
-                  msg.role === "ai"
-                    ? "bg-gray-800 border border-gray-700 text-gray-100"
-                    : "bg-cyan-600 text-white ml-auto"
+                  msg.role === "assistant"
+                    ? "bg-rose-800 border border-red-700 text-red-100"
+                    : "bg-purple-600 text-white ml-auto"
                 }`}
               >
                 {msg.content}
@@ -106,7 +106,7 @@ export default function Home() {
       </div>
 
       {/* Input Area */}
-      <div className="fixed bottom-0 w-full bg-gray-800 border-t border-gray-700 p-4">
+      <div className="fixed bottom-0 w-full bg-violet-800 border-t border-rose-700 p-4">
         <div className="max-w-3xl mx-auto">
           <div className="flex gap-3 items-center">
             <input
@@ -115,12 +115,12 @@ export default function Home() {
               onChange={e => setMessage(e.target.value)}
               onKeyPress={e => e.key === "Enter" && handleSend()}
               placeholder="Type your message..."
-              className="flex-1 rounded-xl border border-gray-700 bg-gray-900 px-4 py-3 text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent placeholder-gray-400"
+              className="flex-1 rounded-xl border border-rose-700 bg-gray-900 px-4 py-3 text-gray-100 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent placeholder-gray-400"
             />
             <button
               onClick={handleSend}
               disabled={isLoading}
-              className="bg-cyan-600 text-white px-5 py-3 rounded-xl hover:bg-cyan-700 transition-all disabled:bg-cyan-800 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-rose-600 text-white px-5 py-3 rounded-xl hover:bg-rose-700 transition-all disabled:bg-rose-800 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "Sending..." : "Send"}
             </button>
