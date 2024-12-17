@@ -9,6 +9,7 @@ export async function POST(req: Request) {
     console.log("message received:", message);
     console.log("messages", messages);
 
+    /*
     const url = message.match(urlPattern);
 
     let scrapedContent = "";
@@ -16,6 +17,18 @@ export async function POST(req: Request) {
       console.log("URL found", url);
       const scraperResponse = await scrapeURL(url);
       console.log("Scraped content", scrapedContent);
+      if (scraperResponse) {
+        scrapedContent = scraperResponse.content;
+      }
+    }
+    */
+
+    const url = message.match(urlPattern);
+    let scrapedContent = "";
+    if (url) {
+      console.log("Url found: ", url[0]);
+      const scraperResponse = await scrapeURL(url[0]);
+      console.log("scrapedContent: ", scrapedContent);
       if (scraperResponse) {
         scrapedContent = scraperResponse.content;
       }

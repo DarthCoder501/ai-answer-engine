@@ -144,10 +144,20 @@ function isValidScrapedContent(data: any): data is ScrapedContent {
     (data.error === null || typeof data.error === "string")
   );
 }
-
+/*
 // Get cache key for a URL with sanitization
 function getCacheKey(url: string): string {
   const sanitizedUrl = url.substring(0, 200);
+  return `scrape:${sanitizedUrl}`;
+}
+*/
+
+// Function get cache key for a URL with sanitization
+function getCacheKey(url: string): string {
+  if (typeof url !== "string") {
+    throw new Error(`Invalid URL type: expected string, got ${typeof url}`);
+  }
+  const sanitizedUrl = url.substring(0, 100); // Limit to key length
   return `scrape:${sanitizedUrl}`;
 }
 
